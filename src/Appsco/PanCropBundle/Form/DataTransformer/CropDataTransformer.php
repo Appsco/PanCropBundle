@@ -26,12 +26,6 @@ class CropDataTransformer implements DataTransformerInterface
      */
     private $fileFormat = Format::PNG;
 
-    public function __construct()
-    {
-        $this->accessor = PropertyAccess::createPropertyAccessor();
-        $this->cropper = new ImageCropper();
-    }
-
     /**
      * @var array|null Deserialized data received from pan-crop plugin. Null if no crop data is received.
      *         Structure:
@@ -50,11 +44,22 @@ class CropDataTransformer implements DataTransformerInterface
     protected $cropData;
 
     /**
+     * @var UploadedFile|null
+     */
+    protected $uploadedFile;
+
+    /**
      * Contains mappings for: file (required), data (required), mime (optional), name (optional), size(optional)
      *
      * @var array
      */
     private $propertyMappings = [];
+
+    public function __construct()
+    {
+        $this->accessor = PropertyAccess::createPropertyAccessor();
+        $this->cropper = new ImageCropper();
+    }
 
     /**
      * @param string $cropData
@@ -67,6 +72,11 @@ class CropDataTransformer implements DataTransformerInterface
         return $this;
     }
 
+    public function setUploadedFile(UploadedFile $uploadedFile)
+    {
+        $this->uploadedFile = $uploadedFile;
+    }
+
     /**
      * @param array $propertyPaths
      * @return $this|CropDataTransformer
@@ -76,18 +86,6 @@ class CropDataTransformer implements DataTransformerInterface
         $this->propertyMappings = $propertyPaths;
 
         return $this;
-    }
-
-    /**
-     * @param object $model
-     * @return UploadedFile|null
-     */
-    protected function getFile($model)
-    {
-        if (false == isset($this->propertyMappings['file'])) {
-            return null;
-        }
-        return $this->accessor->getValue($model, $this->propertyMappings['file']);
     }
 
     /**
@@ -169,7 +167,7 @@ class CropDataTransformer implements DataTransformerInterface
             return null;
         }
 
-        if ($this->getFile($model)) {
+        if ($this->uploadedFile) {
             $transformed = $this->cropImage($model);
         }
 
@@ -183,14 +181,13 @@ class CropDataTransformer implements DataTransformerInterface
      */
     protected function cropImage($model)
     {
-        $uploadedFile = $this->getFile($model);
-        if (false == $uploadedFile) {
-            throw new \LogicException('Expected uploaded file but got null');
+        if (false == $this->uploadedFile) {
+            return;
         }
 
-        $fileHandle = fopen($uploadedFile->getRealPath(), 'rb');
+        $fileHandle = fopen($this->uploadedFile->getRealPath(), 'rb');
         $imageData = stream_get_contents($fileHandle);
-        $imageMime = $uploadedFile->getMimeType();
+        $imageMime = $this->uploadedFile->getMimeType();
 
         if (null !== $this->cropData) {
             $this->cropper->loadImageFromString($imageData);
@@ -208,7 +205,7 @@ class CropDataTransformer implements DataTransformerInterface
 
         $this->setMime($imageMime, $model);
         $this->setSize(strlen($imageData), $model);
-        $this->setName($uploadedFile->getClientOriginalName(), $model);
+        $this->setName($this->uploadedFile->getClientOriginalName(), $model);
         $this->setData($imageData, $model);
     }
 

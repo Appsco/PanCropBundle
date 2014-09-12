@@ -25,7 +25,7 @@ class PanCropFormType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        //$options['file_options']['auto_initialize'] = false;
+        $options['file_options']['mapped'] = false;
         $builder
             ->add('file', 'file', $options['file_options'])
             ->add('crop_data', 'hidden', array(
@@ -37,7 +37,6 @@ class PanCropFormType extends AbstractType
         //$builder->addModelTransformer($this->transformer);
         $builder->addViewTransformer($this->transformer);
         $this->transformer->setPropertyPaths(array(
-            'file' => $options['file_mapping'],
             'mime' => $options['mime_mapping'],
             'size' => $options['size_mapping'],
             'name' => $options['name_mapping'],
@@ -47,6 +46,7 @@ class PanCropFormType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($builder, $options) {
             $data = $event->getData();
             $this->transformer->setCropData(json_decode($data['crop_data'], true));
+            $this->transformer->setUploadedFile($data['file']);
         });
     }
 
@@ -54,7 +54,6 @@ class PanCropFormType extends AbstractType
     {
         $resolver->setDefaults(array(
             'file_format' => Format::PNG,
-            'file_mapping' => 'file',
             'mime_mapping' => null,
             'size_mapping' => null,
             'name_mapping' => null,

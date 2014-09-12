@@ -5,6 +5,5 @@ services:
         tags:
             - { name: form.type, alias: pan_crop }
 
-    appsco.pan_crop.crop_transformer.bwc:
+    appsco.pan_crop.crop_transformer:
         class: Appsco\PanCropBundle\Form\DataTransformer\CropDataTransformer
-        scope: prototype
