@@ -72,7 +72,7 @@ class CropDataTransformer implements DataTransformerInterface
         return $this;
     }
 
-    public function setUploadedFile(UploadedFile $uploadedFile)
+    public function setUploadedFile(UploadedFile $uploadedFile = null)
     {
         $this->uploadedFile = $uploadedFile;
     }
