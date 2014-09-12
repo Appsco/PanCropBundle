@@ -1,0 +1,10 @@
+services:
+    appsco.pan_crop.form.type.pan_crop:
+        class: Appsco\PanCropBundle\Form\Type\PanCropFormType
+        arguments: [@appsco.pan_crop.crop_transformer]
+        tags:
+            - { name: form.type, alias: pan_crop }
+
+    appsco.pan_crop.crop_transformer.bwc:
+        class: Appsco\PanCropBundle\Form\DataTransformer\CropDataTransformer
+        scope: prototype
