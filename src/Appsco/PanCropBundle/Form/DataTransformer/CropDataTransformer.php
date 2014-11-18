@@ -181,8 +181,8 @@ class CropDataTransformer implements DataTransformerInterface
      */
     protected function cropImage($model)
     {
-        if (false == $this->uploadedFile) {
-            return;
+        if (false == $this->uploadedFile || false == $this->uploadedFile->isValid()) {
+            return null;
         }
 
         $fileHandle = fopen($this->uploadedFile->getRealPath(), 'rb');
@@ -207,6 +207,8 @@ class CropDataTransformer implements DataTransformerInterface
         $this->setSize(strlen($imageData), $model);
         $this->setName($this->uploadedFile->getClientOriginalName(), $model);
         $this->setData($imageData, $model);
+
+        return null;
     }
 
 }

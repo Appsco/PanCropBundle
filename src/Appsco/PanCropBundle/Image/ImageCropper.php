@@ -2,6 +2,8 @@
 
 namespace Appsco\PanCropBundle\Image;
 
+use Appsco\PanCropBundle\Error\InvalidImageFormatException;
+
 class ImageCropper
 {
     /**
@@ -26,10 +28,15 @@ class ImageCropper
      * Loads image from string
      *
      * @param string $imageData
+     * @throws \Appsco\PanCropBundle\Error\InvalidImageFormatException
      */
     public function loadImageFromString($imageData)
     {
-        $this->image = imagecreatefromstring($imageData);
+        try {
+            $this->image = imagecreatefromstring($imageData);
+        } catch (\Exception $ex) {
+            throw new InvalidImageFormatException();
+        }
     }
 
     /**
