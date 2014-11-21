@@ -33,8 +33,11 @@ class ImageCropper
     public function loadImageFromString($imageData)
     {
         try {
-            $this->image = imagecreatefromstring($imageData);
+            $this->image = @imagecreatefromstring($imageData);
         } catch (\Exception $ex) {
+            throw new InvalidImageFormatException();
+        }
+        if (false == $this->image) {
             throw new InvalidImageFormatException();
         }
     }
