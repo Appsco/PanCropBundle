@@ -189,7 +189,7 @@ class CropDataTransformer implements DataTransformerInterface
         $imageData = stream_get_contents($fileHandle);
         $imageMime = $this->uploadedFile->getMimeType();
 
-        if (null !== $this->cropData) {
+        if (!empty($this->cropData)) {
             $this->cropper->loadImageFromString($imageData);
             $this->cropper->crop(
                 $this->cropData['sx'],
