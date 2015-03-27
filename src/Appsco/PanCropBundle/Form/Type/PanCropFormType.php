@@ -10,6 +10,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class PanCropFormType extends AbstractType
 {
@@ -46,7 +47,10 @@ class PanCropFormType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) use ($builder, $options) {
             $data = $event->getData();
             $this->transformer->setCropData(json_decode($data['crop_data'], true));
-            $this->transformer->setUploadedFile($data['file']);
+            if($data['file'] instanceof UploadedFile)
+            {
+                $this->transformer->setUploadedFile($data['file']);
+            }
         });
     }
 
