@@ -27,16 +27,18 @@
                         data[id] = {};
 
                         data[id].settings = settings;
+                        var minScale = Math.max(settings.width / originalImageSize.w, settings.height / originalImageSize.h);
                         data[id].crop = {
                             x: 0,
                             y: 0,
                             w: settings.width,
                             h: settings.height,
-                            s: Math.max(Math.max(1, settings.width / originalImageSize.w), settings.height / originalImageSize.h)
+                            s: minScale
                         };
                         data[id].state = {
                             originalSize: originalImageSize,
-                            minScale: Math.max(settings.width / originalImageSize.w, settings.height / originalImageSize.h)
+                            minScale: minScale,
+                            maxScale: Math.max(minScale, 1)
                         };
 
                         createWrapper($element);
@@ -101,6 +103,15 @@
                 data.sh = parseInt(data.h / data.s);
 
                 return data;
+            },
+
+            getScaleLimits : function () {
+                var $element = $(this);
+                var state    = getElementData($element).state;
+                return {
+                    min: state.minScale,
+                    max: state.maxScale
+                };
             }
         };
 
