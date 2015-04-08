@@ -73,10 +73,12 @@
                                             e.preventDefault();
                                             var delta = settings.mousewheelSensitivity * ((e.wheelDelta || -e.detail) > 0 ? 1 : -1);
                                             $image.panCrop('scale', $image.panCrop('getCropData').s + delta);
+                                            settings.onScale($image.panCrop('getCropData').s);
                                         };
                                         $image[0].addEventListener('mousewheel', scrollHandler, false);
                                         $image[0].addEventListener('DOMMouseScroll', scrollHandler, false);
                                     }
+                                    settings.onLoad();
                                 }
                             });
 
@@ -110,7 +112,9 @@
 
     $.fn.panCropUi.defaults = {
         mousewheelScale      : true,
-        mousewheelSensitivity: .05
+        mousewheelSensitivity: .05,
+        onLoad               : function () {},
+        onScale              : function () {}
     };
 
     $.fn.panCropUi.settings = {};
