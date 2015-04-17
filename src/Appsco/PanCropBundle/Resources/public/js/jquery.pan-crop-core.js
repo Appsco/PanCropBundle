@@ -27,7 +27,7 @@
                         data[id] = {};
 
                         data[id].settings = settings;
-                        var minScale = Math.max(settings.width / originalImageSize.w, settings.height / originalImageSize.h);
+                        var minScale = calculateMinScale(originalImageSize, settings.width, settings.height);
                         data[id].crop = {
                             x: 0,
                             y: 0,
@@ -66,6 +66,21 @@
                     var id = $element.data('panCropId');
                     $element.unbind('mousemove.pancrop.' + id + ' mouseup.pancrop.' + id + ' mousedown.pancrop.' + id);
                 }
+            },
+
+            setSize: function (width, height) {
+                var $element = $(this);
+                var settings = getElementData($element).settings;
+                var cropData = getElementData($element).crop;
+                var state    = getElementData($element).state;
+
+                cropData.w     = settings.width  = width;
+                cropData.h     = settings.height = height;
+                cropData.x     = cropData.y = 0;
+                state.minScale = calculateMinScale(state.originalSize, width, height);
+                cropData.s     = state.minScale;
+
+                syncViewToState($element, cropData);
             },
 
             scale : function (scale) {
@@ -117,6 +132,10 @@
 
         var getElementData = function ($element) {
             return data[$element.data('panCropId')] || null;
+        };
+
+        var calculateMinScale = function (originalImageSize, targetWidth, targetHeight) {
+            return Math.max(targetWidth / originalImageSize.w, targetHeight / originalImageSize.h);
         };
 
         var createWrapper = function ($element) {
