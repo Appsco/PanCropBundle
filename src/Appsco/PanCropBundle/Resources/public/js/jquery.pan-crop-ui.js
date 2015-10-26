@@ -35,8 +35,8 @@
      *                                                            sy: integer (y coordinate of top left corner (if croping before scale))
      *                                                        }
      * validationMessageContainer: string          [OPTIONAL]; Selector for container div which holds an element with validation message to display.
-     * validationMessage         : string          [REQUIRED]; Selector for an element which holds validation message.
-     *                                                         This is always HTML data attribute!
+     * validationMessage         : string          [OPTIONAL]; Selector for an element which holds validation message.
+     *                                                         This is always HTML data attribute! If not provided it will be set to "<p class="hide" data-pancrop-message>Error</p>"
      *                                                         Example: <p class="hide" data-pancrop-message></p>
      *
      */
@@ -56,7 +56,7 @@
                         alert('The File APIs are not fully supported in this browser!');
                     }
                     if (!settings.validationMessage) {
-                        $.error('validationMessage setting must be provided!');
+			settings.validationMessage = '<p class="hide" data-pancrop-message>Error</p>';
                     }
 
                     var $previewBox = settings.$previewBox;
