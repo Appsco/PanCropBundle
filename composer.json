@@ -7,9 +7,9 @@
         "psr-0": { "Appsco\\PanCropBundle\\": "src/" }
     }, 
     "require": {
-        "symfony/form": "~2.2",
-        "symfony/http-kernel": "~2.2",
-        "symfony/dependency-injection": "~2.2",
-        "symfony/config": "~2.2"
+        "symfony/form": "^3.1",
+        "symfony/http-kernel": "^3.1",
+        "symfony/dependency-injection": "^3.1",
+        "symfony/config": "^3.1"
     }
 }
